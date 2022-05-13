@@ -1,0 +1,1 @@
+mosquitto -c config.txt -v
