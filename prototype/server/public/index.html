@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>IoT Hub</title>
+</head>
+<body>
+    <!--- https://unpkg.com/vue@3.2.33/dist/vue.global.prod.js -->
+    <script src="vue.global.prod.js"></script>
+
+    <div id="app">
+        <div id="controls" class="panel">
+            <h1>controls</h1>
+            <hr>
+            <div id="buttons">
+                <button @click="publish_cmd('SIG_ON')">SIG_ON</button>
+                <button @click="publish_cmd('SIG_OFF')">SIG_OFF</button>
+                <button @click="publish_cmd('SIG_STATUS')">SIG_STATUS</button>
+                <button @click="publish_cmd('SIG_RESTART')">SIG_RESTART</button>
+                <button @click="publish_cmd('SIG_RESET')">SIG_RESET</button>
+            </div>
+        </div>
+        <div id="esp-cmd" class="panel">
+            <h1>esp/cmd</h1>
+            <hr>
+            <div class="log">
+                <p v-for="item in esp_cmd">{{item}}</p>
+            </div>
+        </div>
+        <div id="esp-data" class="panel">
+            <h1>esp/data</h1>
+            <hr>
+            <div class="log">
+                <p v-for="item in esp_data">{{item}}</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        const { createApp } = Vue
+
+        let app = createApp({
+            data() {
+                return {
+                    //esp_cmd: ['SIG_ON', 'SIG_OFF', 'SIG_STATUS', 'SIG_ON', 'SIG_OFF', 'SIG_STATUS','SIG_ON', 'SIG_OFF', 'SIG_STATUS'],
+                    //esp_data: ['LED_STATUS: ON', 'LED_STATUS: OFF']
+                    esp_cmd: [],
+                    esp_data: []
+                }
+            },
+            methods: {
+                publish_cmd(cmd) {
+                    //socket.emit('publish_cmd', cmd);
+                    fetch('/api/iot?cmd=' + cmd);
+                }
+            }
+
+        }).mount('#app');
+
+        function addTimestamp(str) {
+            var today = new Date();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            return "[" + time + "] " + str;
+        }
+
+        function scrollLogsToBottom() {
+            let panels = document.getElementsByClassName("log");
+            Array.prototype.forEach.call(panels, e => {
+                e.scrollTop = e.scrollHeight;
+            });
+        }
+        
+        socket.on('esp/cmd', (msg) => {
+            app.$data.esp_cmd.push(addTimestamp(msg));
+            scrollLogsToBottom()
+        });
+
+        socket.on('esp/data', (msg) => {
+            app.$data.esp_data.push(addTimestamp(msg));
+            scrollLogsToBottom()
+        })
+    </script>
+</body>
+</html>

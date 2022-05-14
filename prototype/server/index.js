@@ -1,28 +1,25 @@
-let mqtt = require('mqtt');
 
-let broker_addr = 'mqtt://localhost'
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const io = require('./socket.js').init(server);
 
-let base_topic = 'esp'
+const port = 8080;
 
-let topic_sub = `${base_topic}/data`
-let topic_pub = `${base_topic}/cmd`
+app.use(express.static('public'));
 
-let client = mqtt.connect(broker_addr)
+var iot_route = require('./routes/iot');
+app.use('/api/iot', iot_route)
 
-client.on('connect', () => {
-    console.log(`connnected to: ${broker_addr}`);
-
-    client.subscribe(topic_sub, err => {
-        if (err) console.log(err);
-        else console.log(`subscribed to: ${topic_sub}`);
+io.on('connection', (socket) => {
+    // console.log('a user connected');
+    socket.on('disconnect', () => {
+        // console.log('user disconnected');
     });
-    
 });
 
-client.on('message', (topic, message) => {
-    console.log(message.toString());
+server.listen(port, () => {
+    console.log(`Web server listening on: http://localhost:${port}`)
 });
 
-
-// reference
-// https://dev.t-matix.com/blog/platform/itwo-way-communication-with-iot-devices-using-mqtt/

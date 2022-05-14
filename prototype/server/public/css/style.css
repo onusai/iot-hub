@@ -1,0 +1,48 @@
+body {
+    background-color: #222831;
+    color: #DDDDDD;
+    font-family: monospace;
+}
+
+#app {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.panel {
+    background-color: #30475E;
+    margin: 20px;
+    padding: 10px;
+    min-height: 400px;
+}
+
+h1 {
+    margin: 0;
+}
+
+hr {
+    border-color: #DDDDDD;
+}
+
+.log {
+    min-height: 600px;
+    max-height: 600px;
+    overflow: scroll;
+    background-color: #1f1f1f;
+    padding: 10px;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+#buttons button {
+    margin: 10px;
+    padding: 5px;
+    font-size: 1.6em;
+    background-color: #1f1f1f;
+    border-color: #616161;;
+    color: #DDDDDD;
+}
