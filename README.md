@@ -13,8 +13,13 @@ Framework for developing and managing IoT devices
         * Monitor and control connected IoT devices
 
 ## Software
-* NodeJS JavaScript Runtime
-    * Frontend JS Framework: TBD (VueJs or React)
-* NPM Node Package Manager
-* Arduino IDE
+* NodeJs & NPM: https://nodejs.org/en/download/
+* Mosquitto MQTT Broker: https://mosquitto.org/download/
+* Arduino IDE: https://www.arduino.cc/en/software
 * Database: TBD (mysql or mongodb)
+
+
+## Prototype 
+A prototype demonstrating the architecture below can be found in the `prototype` directory
+
+![Architecture](prototype/architecture.png "Architecture")
