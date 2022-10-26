@@ -1,0 +1,30 @@
+{
+  "Users": [
+    {
+      "_id": "",
+      "email": "",
+      "password": "",
+      "collections": [
+        {
+          "_id": "",
+          "name": "",
+          "devices": [
+            {
+              "_id": "",
+              "name": "",
+              "type": "",
+              "data": [
+                {
+                  "_id": "",
+                  "name": "",
+                  "type": "",
+                  "value": ""
+                }  
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -29,6 +29,7 @@ void setup() {
   Serial.begin(115200);
   WiFiManager wm;
   
+  
   // Connect to WiFi
   bool res;
   res = wm.autoConnect(apSSID);
