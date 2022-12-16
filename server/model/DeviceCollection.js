@@ -12,6 +12,11 @@ var DeviceCollectionModel = new Schema({
     ref: "user",
     //    unique: true,
   },
+  readme: {
+    type: String,
+    required: false,
+    default: "",
+  },
 });
 
 module.exports = mongoose.model("DeviceCollection", DeviceCollectionModel);

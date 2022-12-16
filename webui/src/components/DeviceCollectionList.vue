@@ -13,7 +13,7 @@
         <div class="item-list">
             <div class="list-item" v-for="item in itemList" v-bind:key="item._id">
                 <input type="radio" class="btn-check" name="btnradio" :id="'btnradio-'+item._id" autocomplete="off">
-                <label class="btn btn-light item-name" :for="'btnradio-'+item._id" @click="itemSelected(item._id)">{{item.name}}</label>
+                <label class="btn btn-light btn-sm item-name" :for="'btnradio-'+item._id" @click="itemSelected(item._id)">{{item.name}}</label>
             </div>
             <div class="input-item" v-if="showAddNew">
                 <input ref="newItemInput" type="text" class="form-control" placeholder="New Collection Name">
@@ -110,11 +110,9 @@ export default {
 .list-heading {
     display: flex;
     justify-content: space-between;
-    background-color: #413f4f;
+    background-color: #3f464f;
     padding: 10px;
     color: white;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
     text-align: left;
     align-items: center;
 }
@@ -129,7 +127,11 @@ export default {
     flex-direction: column;
     padding: 10px;
     gap: 5px;
-
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    box-sizing: content-box;
+    padding: 8px 17px 8px 8px;
 }
 
 .input-item {

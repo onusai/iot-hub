@@ -11,14 +11,19 @@ var DeviceModel = new Schema({
     ref: "DeviceCollection",
     required: true,
   },
-  template: {
-    type: String,
-    required: true,
-  },
   isRegistered: {
     type: Boolean,
     required: true,
     default: false,
+  },
+  description: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  template: {
+    type: String,
+    required: true,
   },
   lastIP: {
     type: String,

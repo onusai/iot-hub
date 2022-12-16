@@ -2,14 +2,17 @@
     <div class="user-dashbaord">
       <div class="left-pannel">
         <div class="panel-lists">
-          <DeviceCollectionList @selected="collectionSelected"/>
-          <DeviceList ref="deviceList" @selected="deviceSelected"/>
+          <DeviceCollectionList class="dash-item-list" ref="collectionList" @selected="collectionSelected"/>
+          <DeviceList class="dash-item-list" ref="deviceList" @selected="deviceSelected"/>
         </div>
-        <TerminalWindow ref="terminal"/>
+        <TerminalWindow ref="terminal" />
       </div>
-      <div ref="contex" class="contex">
-        <CollectionContextDashboard v-if="contextType=='collection'" :data="selectedCollection"/>
-        <DeviceContextDashboard ref="deviceContext" v-if="contextType=='device'" :data="selectedDevice"/>
+      <div ref="contex" class="context">
+        <CollectionContextDashboard v-if="contextType=='collection'" @colSettingsChanged="colSettingsChanged" :colData="selectedCollection" @collectionDeleted="collectionDeleted"/>
+        <DeviceContextDashboard ref="deviceContext" v-else-if="contextType=='device'" @devSettingsChanged="devSettingsChanged" :devData="selectedDevice" @refreshDevices="refreshDevices"/>
+        <div class="empty-context" v-else>
+          <h1>[ Nothing Selected ]</h1>
+        </div>
       </div>
     </div>
 </template>
@@ -21,7 +24,7 @@ import DeviceList from '@/components/DeviceList.vue';
 import CollectionContextDashboard from '@/components/CollectionContextDashboard.vue';
 import DeviceContextDashboard from '@/components/DeviceContextDashboard.vue';
 import TerminalWindow from '@/components/TerminalWindow.vue';
-import io from 'socket.io-client';
+//import io from 'socket.io-client';
 
 const PORT =
   process.env.NODE_ENV == "production"
@@ -44,12 +47,12 @@ export default {
       selectedDevice: null,
       selectedMostRecent: null,
       constr: "",
-      contextType: "",
-      socket: io(`http://localhost:8081`)
+      contextType: ""
     }
   },
   methods: {
     collectionSelected(collection) {
+      if (collection.readme == "") collection.readme = "# IoT Device Collection\n< Edit to describe the purpose and usage of this device group >";
       this.selectedCollection = collection;
       this.$refs['deviceList'].changeCollection(collection);
       collection['dataType'] = "collection";
@@ -65,13 +68,34 @@ export default {
       device['dataType'] = "device";
       this.selectedMostRecent = device;
       this.contextType = "device";
-      if (this.$refs['deviceContext'])
-        this.$refs['deviceContext'].update();
       if (this.$refs['terminal']) {
         let path = this.selectedCollection.name + "/" + this.selectedDevice.name;
         this.$refs['terminal'].open(path, this.selectedMostRecent)
       }
-        
+    },
+    refreshDevices(deselect) {
+      this.$refs["deviceList"].refreshList();
+      if (deselect) {
+        this.collectionSelected(this.selectedCollection);
+      }
+    },
+    devSettingsChanged(newData) {
+      this.selectedDevice.name = newData.name;
+      this.selectedDevice.description = newData.description;
+      this.selectedDevice.template = newData.template;
+      this.selectedMostRecent = this.selectedDevice;
+    },
+    colSettingsChanged(newData) {
+      this.selectedCollection.name = newData.name;
+      this.selectedCollection.readme = newData.readme;
+      this.selectedMostRecent = this.selectedCollection;
+    },
+    collectionDeleted() {
+      this.selectedCollection = null;
+      this.selectedDevice = null;
+      this.selectedMostRecent = null;
+      this.contextType = "";
+      this.$refs["collectionList"].refreshList();
     }
   },
   mounted() {
@@ -80,14 +104,12 @@ export default {
     if (store.isLoggedIn) {
       this.socket.emit('mqttListen', store.cookies.get("access_token"));
     }
-    this.$refs['terminal'].attachIO(this.socket);
-
   },
   setup() {
     const store = useStore();
     store.getLoggedIn();
     store.getUserData();
-    return { store };
+    return { store, socket:store.socket };
   }
 };
 </script>
@@ -95,33 +117,51 @@ export default {
 <style scoped>
 .user-dashbaord {
   display: grid;
+  width: 100%;
+  height: 100%;
   grid-template-columns: 2fr 3fr;
-  grid-template-rows: 1fr;
+  grid-template-rows: minmax(0, 1fr);
   grid-template-areas: "left-pannel contex";
-  min-height: 100%;
 }
 
 .left-pannel {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .panel-lists {
   display: flex;
   flex-grow: 1;
+  overflow: hidden;
 }
 
 .collections {
-  background-color:#727b8e;
+  background-color:#727c8e;
   width: 100%;
 }
 
 .devices {
-  background-color: lightgray;
+  background-color: #bbc4ce;
   width: 100%;
+  overflow: hidden;
+}
+
+.dash-item-list {
+  overflow: hidden;
 }
 
 .context {
-  background-color: white;
+  background-color:rgb(251, 251, 251);
+  width: 100%;
+  height: 100%;
+}
+
+.empty-context {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: rgb(187, 187, 187);
 }
 </style>

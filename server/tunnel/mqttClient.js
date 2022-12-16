@@ -5,6 +5,7 @@ module.exports = {
     let broker_addr = `mqtt://${process.env.MQTT_ADDRESS}`;
     const mqtt = require("mqtt");
     mqttClient = mqtt.connect(broker_addr);
+    if (mqttClient) console.log("MQTT connection established")
     return mqttClient;
   },
   get: function () {

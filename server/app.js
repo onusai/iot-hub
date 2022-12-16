@@ -37,13 +37,8 @@ app.use(function (err, req, res, next) {
   res.json({ error: err });
 });
 
-const PORT =
-  process.env.NODE_ENV == "production"
-    ? process.env.PROD_PORT
-    : process.env.DEV_PORT;
-
-const server = app.listen(PORT, () => {
-  console.log(`Server started on http://192.168.0.3:${PORT}`);
+const server = app.listen(process.env.LISTEN_PORT, process.env.LISTEN_ADDRESS, () => {
+  console.log(`Server started on ${process.env.LISTEN_ADDRESS}:${process.env.LISTEN_PORT}`);
 });
 
 // init io and mqtt

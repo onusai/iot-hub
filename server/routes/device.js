@@ -3,6 +3,7 @@ const router = express.Router();
 const DeviceModel = require("../model/Device");
 const UserModel = require("../model/User");
 
+
 router.post("/register", async (req, res, next) => {
   let device = await DeviceModel.findOne({
     _id: req.body.deviceID,

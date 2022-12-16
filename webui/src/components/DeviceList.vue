@@ -13,7 +13,7 @@
         <div class="item-list">
             <div class="list-item" v-for="item in itemList" v-bind:key="item._id">
                 <input type="radio" class="btn-check" name="btnradio-device" :id="'btnradio-device-'+item._id" autocomplete="off">
-                <label class="btn btn-secondary item-name" :for="'btnradio-device-'+item._id" @click="itemSelected(item._id)">{{item.name}}</label>
+                <label class="btn btn-secondary btn-sm item-name" :for="'btnradio-device-'+item._id" @click="itemSelected(item._id)">{{item.name}}</label>
             </div>
             <div class="input-item" v-if="showAddNew">
                 <input ref="newItemInput" type="text" class="form-control" placeholder="New Device Name">
@@ -121,11 +121,9 @@ export default {
 .list-heading {
     display: flex;
     justify-content: space-between;
-    background-color: #5a5a5a;
+    background-color: #586473;
     padding: 10px;
     color: white;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
     text-align: left;
     align-items: center;
 }
@@ -138,8 +136,12 @@ export default {
 .item-list {
     display: flex;
     flex-direction: column;
-    padding: 10px;
     gap: 5px;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    box-sizing: content-box;
+    padding: 8px 17px 8px 8px;
 }
 
 .input-item {

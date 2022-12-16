@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { useCookies } from "vue3-cookies";
 import { useStore } from '@/stores/index';
 import { storeToRefs } from 'pinia';
 import axios from 'axios';
@@ -74,12 +73,13 @@ html, body {
 
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 50px auto 50px;
+  grid-template-rows: 50px minmax(0, 1fr) 25px;
   grid-template-areas: 
     "header"
     "router"
     "footer";
-  min-height: 100%;
+  height: 100%;
+  height: 100%;
 }
 
 header {
@@ -92,6 +92,7 @@ header {
 
 .router {
   grid-area: router;
+  overflow: hidden;
 }
 
 footer {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { useCookies } from "vue3-cookies";
+import io from 'socket.io-client';
 
 export const useStore = defineStore("main", {
   state: () => ({
@@ -8,6 +9,7 @@ export const useStore = defineStore("main", {
     userData: null,
     pageTitle: "",
     isLoggedIn: false,
+    socket: io()
   }),
   getters: {
     doubleCount: (state) => state.count * 2,

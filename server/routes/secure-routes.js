@@ -63,7 +63,7 @@ router.post("/device/connectionstring", async (req, res, next) => {
   });
 
   let str = {
-    a: "192.168.0.3:8081",
+    a: `${process.env.SERVER_ADDRESS}:${process.env.LISTEN_PORT}`,
     c: req.body.deviceCollection,
     d: req.body._id,
   };
@@ -71,6 +71,81 @@ router.post("/device/connectionstring", async (req, res, next) => {
   buf = Buffer.from(str).toString("base64");
   str_len = str.length.toString().padStart(3, "0");
   res.json({ buf: str_len + buf });
+});
+
+router.post("/device/save", async (req, res, next) => {
+  let device = await DeviceModel.findOne({
+    _id: req.body._id,
+  });
+
+  if (!device) {
+    return res
+      .status(404)
+      .json({ message: "Error: Device ID not found." });
+  }
+
+  device.name = req.body.name;
+  device.description = req.body.description;
+  device.template = req.body.template;
+  await device.save();
+
+  return res.status(200).send();
+});
+
+router.post("/collection/save", async (req, res, next) => {
+  let collection = await CollectionModel.findOne({
+    _id: req.body._id,
+  });
+
+  if (!collection) {
+    return res
+      .status(404)
+      .json({ message: "Error: Collection ID not found." });
+  }
+
+  collection.name = req.body.name;
+  collection.readme = req.body.readme;
+  await collection.save();
+
+  return res.status(200).send();
+});
+
+router.post("/collection/delete", async (req, res, next) => {
+  await DeviceModel.deleteMany({
+    deviceCollection: req.body._id,
+  });
+
+  await CollectionModel.deleteOne({
+    _id: req.body._id,
+  });
+
+  return res.status(200).send();
+});
+
+router.post("/device/delete", async (req, res, next) => {
+  await DeviceModel.deleteOne({
+    _id: req.body._id,
+  });
+
+  return res.status(200).send();
+});
+
+
+router.post("/device/deregister", async (req, res, next) => {
+  let device = await DeviceModel.findOne({
+    _id: req.body._id,
+  });
+
+  if (!device) {
+    return res
+      .status(404)
+      .json({ message: "Error: Device ID not found." });
+  }
+
+  device.isRegistered = false;
+  await device.save();
+
+  return res.status(200).send();
 });
 
 module.exports = router;

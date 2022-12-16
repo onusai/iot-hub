@@ -1,6 +1,6 @@
 <template>
-    <div class="terminal open">
-        <div class="terminal-head">
+    <div class="terminal" :class="toggleState">
+        <div class="terminal-head" @click="toggleTerminal">
             Terminal
         </div>
         <div ref="tbody" class="terminal-body">
@@ -26,7 +26,8 @@ export default {
         return {
             path: "",
             log: {"":[{text:"IoT Hub v0.1 - Type 'help' to show commands", timestamp:""}]},
-            item: null
+            item: null,
+            toggleState: "closed"
         }
     },
     methods: {
@@ -63,22 +64,23 @@ export default {
             let tbody = this.$refs["tbody"];
             tbody.scrollTop = tbody.scrollHeight;
         },
-        attachIO(socket) {
-            this.socket = socket;
-            this.socket.on('mqttData', (data) => {
-                console.log(data);
-                this.print(data.message);
-            });
+        toggleTerminal() {
+            if (this.toggleState == "open") this.toggleState = "closed";
+            else this.toggleState = "open";
         }
     },
     mounted() {
+        this.socket.on('mqttData', (data) => {
+            //console.log(data);
+            this.print(data.message);
+        });
     },
     setup() {
         const store = useStore();
         store.getLoggedIn();
         store.getUserData();
         const { isLoggedIn, userData} = storeToRefs(store);
-        return { store, isLoggedIn, userData};
+        return { store, isLoggedIn, userData, socket: store.socket};
     },
 }
 </script>
@@ -102,9 +104,20 @@ export default {
         "terminal-input";
 }
 
+.closed {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 25px 0px 30px;
+    grid-template-areas:
+        "terminal-head"
+        "terminal-body"
+        "terminal-input";
+}
+
 .terminal-head {
     background-color: #413f4f;
     padding-left: 10px;
+    cursor: pointer;
 }
 
 .terminal-body {
