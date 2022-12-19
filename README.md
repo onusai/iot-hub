@@ -42,6 +42,7 @@ npm install
 
 ## Start server
 To start the server, execute the `run.sh` script
+- If you are running the server locally, open http://localhost:8080 in your browser 
 
 ## Architecture
 <img src="https://user-images.githubusercontent.com/18707771/208431701-96432654-76ed-4468-bc47-51bd30a672a5.png" alt="Architecture" width="35%">
